@@ -31,7 +31,7 @@ with WSVuls we can extract:
 - Requests
 - Total Bytes
 
-in `mapper` feature we can extract :
+in `mapper` feature for each request we can extract :
 - Resource
 - Request Start
 - Content Type
