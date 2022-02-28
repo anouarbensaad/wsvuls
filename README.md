@@ -4,7 +4,9 @@
 </h1>
 
 <h4 align="center">Website vulnerability scanner detect issues [ outdated server software and insecure HTTP headers.]</h4>
-
+<div align="center">
+<img src="https://user-images.githubusercontent.com/23563528/155910876-cc6f1f4c-7f64-4646-bbef-d95aeb91a928.png" />
+</div>
 
 ### What's WSVuls?
 
@@ -26,7 +28,13 @@ with WSVuls we can extract:
 - Requests
 - Total Bytes
 
-in mapping features we can extract:
+##### 1. Mapper
+
+<div align="center">
+<img src="https://user-images.githubusercontent.com/23563528/155911260-1481ce4f-728f-45a7-8c22-365cb7e496b9.png" />
+</div>
+
+in mapper we can extract:
 
 - Resource
 - Request Start
