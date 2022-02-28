@@ -1,0 +1,8 @@
+{
+    "base" : {
+		  "host": "synk.io",
+		  "url": "https://snyk.io/",
+		  "endpoint": "website-scanner/",
+		  "scanner": "wp-admin/admin-ajax.php"
+	  }
+  }
