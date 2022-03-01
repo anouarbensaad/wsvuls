@@ -49,6 +49,20 @@ WSVuls can extract the following data while crawling:
 - SSL Negotiation
 - Error/Status Code
 
+### Docker
+WSVuls can be launched using docker
+
+##### Build Image
+```BASH
+$ git clone https://github.com/anouarbensaad/wsvuls
+$ cd wsvuls
+$ docker build -t wsvuls:latest .
+```
+##### Run a WSVuls container with interactive mode
+```BASH
+$ docker run -it --name wsvuls wsvuls:latest -u facebook.com
+```
+
 ### Usage
 
 ```text
