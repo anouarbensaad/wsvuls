@@ -7,16 +7,26 @@
 </h1>
 
 <h4 align="center">Website vulnerability scanner detect issues [ outdated server software and insecure HTTP headers.]</h4>
- 
+
+<p align="center">
+  <a href="https://github.com/anouarbensaad/wsvuls/issues">
+    <img src="https://img.shields.io/github/issues/anouarbensaad/wsvuls"
+         alt="issues">
+  </a>
+  <a href="https://github.com/anouarbensaad/wsvuls/blob/main/LICENSE">
+      <img src="https://img.shields.io/github/license/anouarbensaad/wsvuls">
+  </a>
+</p>
+
+
 ### What's WSVuls?
 
 WSVuls is a simple and powerful command line tool for Linux, Windows and macOS. It's designed for developers/testers and for those workers in IT who want to test vulnerabilities and analyses website from a single command.
 It detects issues outdated software version, insecures HTTP headers, the long and useless requests
 
 ### Why WSVuls ?
-WSVuls uses a crawl process to parse data from target website.
 
-with WSVuls we can extract: 
+WSVuls can extract the following data while crawling: 
 - First Byte
 - Start Render
 - FCP
@@ -31,7 +41,7 @@ with WSVuls we can extract:
 - Requests
 - Total Bytes
 
-in `mapper` feature for each request we can extract :
+##### In Mapper :
 - Resource
 - Request Start
 - Content Type
