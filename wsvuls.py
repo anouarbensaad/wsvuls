@@ -14,7 +14,6 @@ loaded = json.load(f)
 end = '\033[1;0m'
 R = '\033[1;91m'
 G = '\033[1;92m'
-Y = '\033[1;93m'
 
 URL = loaded["base"]["url"]+loaded["base"]["endpoint"]
 sync = loaded["base"]["url"]+loaded["base"]["scanner"]
@@ -244,16 +243,16 @@ def requestsMapper(data):
 
 def parse_requests(content,debug):
 	for c in content:
-		dbglen = len(c[0].split())
-		if (dbglen > 2):
-			# if( c[0].split()[0] == "warning" ):
-			print("%sreqNum:%s%s" % (Y,c[1],end))
-			print("%sreqUrl:%s%s" % (Y,c[2],end))
-			print("%sreqMime:%s%s" % (Y,c[3],end))
-			print("%sreqStart:%s%s" % (Y,c[4],end))
-			print("%sreqBytes: %s%s" % (Y,c[10],end))
-			print("%sreqIP: %s%s" % (Y,c[13],end))
-			print("−−−−−−−−−−−−\n")
+		dbglen = len(c[0].split(" "))
+		if (dbglen == 2):
+			if( c[0].split(" ")[0] == "warning" ):
+				print("%sreqNum:%s%s" % (R,c[1],end))
+				print("%sreqUrl:%s%s" % (R,c[2],end))
+				print("%sreqMime:%s%s" % (R,c[3],end))
+				print("%sreqStart:%s%s" % (R,c[4],end))
+				print("%sreqBytes: %s%s" % (R,c[10],end))
+				print("%sreqIP: %s%s" % (R,c[13],end))
+				print("−−−−−−−−−−−−\n")
 		else:
 			print(f"reqNum: {c[1]}")
 			print(f"reqUrl: {c[2]}")
