@@ -6,6 +6,8 @@ import hashlib
 import uuid
 import json
 
+
+
 f = open('./db/vulners.json')
 loaded = json.load(f)
 
@@ -104,91 +106,131 @@ def getTTFB(data):
 	regexp = r'<td id=\"TTFB\" valign=\"middle\">(.+)<span class=\"units\">(.+)</span></td>'
 	rempiled = re.compile(regexp)
 	matched=re.search(rempiled,data)
-	ttfb_value = matched.group(1)
-	return ttfb_value
+	try:
+		ttfb_value = matched.group(1)
+		return ttfb_value
+	except Exception as err:
+		return None
 
 def getStartRender(data):
 	regexp = r'<td id=\"StartRender\" valign=\"middle\">(.+)<span class=\"units\">(.+)</span></td>'
 	rempiled = re.compile(regexp)
 	matched=re.search(rempiled,data)
-	start_render = matched.group(1)
-	return start_render
+	try:
+		start_render = matched.group(1)
+		return start_render
+	except Exception as err:
+		return None
 
 def getfirstContentfulPaint(data):
 	regexp = r'<td id=\"firstContentfulPaint\" valign=\"middle\">(.+)<span class=\"units\">(.+)</span></td>'
 	rempiled = re.compile(regexp)
 	matched=re.search(rempiled,data)
-	getfirstContentfulPaint = matched.group(1)
-	return getfirstContentfulPaint
+	try:
+		getfirstContentfulPaint = matched.group(1)
+		return getfirstContentfulPaint
+	except Exception as error:
+		return None
 
 def getSpeedIndex(data):
 	regexp = r'<td id=\"SpeedIndex\" valign=\"middle\">(.+)<span class=\"units\">(.+)</span></td>'
 	rempiled = re.compile(regexp)
 	matched=re.search(rempiled,data)
-	SpeedIndex = matched.group(1)
-	return SpeedIndex
+	try:
+		SpeedIndex = matched.group(1)
+		return SpeedIndex
+	except Exception as error:
+		return None
 
 def getLargestContentfulPaint(data):
 	regexp = r'<td id="chromeUserTiming.LargestContentfulPaint" class=".+" valign="middle">(.+)<span class="units">S</span></td>'
 	rempiled = re.compile(regexp)
 	matched=re.search(rempiled,data)
-	LCP = matched.group(1)
-	return LCP
+	try:
+		LCP = matched.group(1)
+		return LCP
+	except Exception as error:
+		return None
 
 def getCumulativeLayoutShift(data):
 	regexp = r'<td id="chromeUserTiming.CumulativeLayoutShift" class=".+" valign="middle">(.+)</td>'
 	rempiled = re.compile(regexp)
 	matched=re.search(rempiled,data)
-	LCP = matched.group(1)
-	return LCP
+	try:
+		LCP = matched.group(1)
+		return LCP
+	except Exception as error:
+		return None
+
 def getTotalBlockingTime(data):
 	regexp = r'<td id="TotalBlockingTime" class=".+" valign="middle"><span class="units comparator">.+</span>(.+)<span class="units">S</span></td>'
 	rempiled = re.compile(regexp)
 	matched=re.search(rempiled,data)
-	TBT = matched.group(1)
-	return TBT
+	try:
+		TBT = matched.group(1)
+		return TBT
+	except Exception as error:
+		return None
 
 def getDocComplete(data):
 	regexp = r'<td id="DocComplete" class="border" valign="middle">(.+)<span class="units">S</span></td>'
 	rempiled = re.compile(regexp)
 	matched=re.search(rempiled,data)
-	DC = matched.group(1)
-	return DC
+	try:
+		DC = matched.group(1)
+		return DC
+	except Exception as error:
+		return None
 
 def getRequestDoc(data):
 	regexp = r'<td id="RequestsDoc" valign="middle">(.+)</td>'
 	rempiled = re.compile(regexp)
 	matched=re.search(rempiled,data)
-	RD = matched.group(1)
-	return RD
+	try:
+		RD = matched.group(1)
+		return RD
+	except Exception as error:
+		return None
 
 def getBytesInDoc(data):
 	regexp = r'<td id="BytesInDoc" valign="middle">(.+)<span class="units">KB</span></td>'
 	rempiled = re.compile(regexp)
 	matched=re.search(rempiled,data)
-	BID = matched.group(1)
-	return BID
+	try:
+		BID = matched.group(1)
+		return BID
+	except Exception as error:
+		return None
 
 def getFullyLoaded(data):
 	regexp = r'<td id="FullyLoaded" class="border" valign="middle">(.+)<span class="units">S</span></td>'
 	rempiled = re.compile(regexp)
 	matched=re.search(rempiled,data)
-	FL = matched.group(1)
-	return FL
+	try:
+		FL = matched.group(1)
+		return FL
+	except Exception as err:
+		return None
 
 def getRequestsCount(data):
 	regexp = r'<td id="Requests" valign="middle">(.+)</td>'
 	rempiled = re.compile(regexp)
 	matched=re.search(rempiled,data)
-	RC = matched.group(1)
-	return RC
+	try:
+		RC = matched.group(1)
+		return RC
+	except Exception as err:
+		return None
 
 def getByteIn(data):
 	regexp = r'<td id="BytesIn" valign="middle">(.+)<span class="units">KB</span></td>'
 	rempiled = re.compile(regexp)
 	matched=re.search(rempiled,data)
-	BI = matched.group(1)
-	return BI
+	try:
+		BI = matched.group(1)
+		return BI
+	except Exception as err:
+		return None
 
 def requestsMapper(data):
 	regx_reqid = r'<th class="reqNum oddRender"><a href=".+">(.+)</a></th>'
@@ -225,19 +267,32 @@ def requestsMapper(data):
 process_load = getAverages(postwvscan(getnonce(res.text)))
 data_content = netspeed(process_load)
 # print(data_content)
-print("First Byte : {0} Seconds".format(getTTFB(data_content)))
-print("Start Render : {0} Seconds".format(getStartRender(data_content)))
-print("FCP : {0} Seconds".format(getfirstContentfulPaint(data_content)))
-print("Speed Index : {0} Seconds".format(getSpeedIndex(data_content)))
-print("LCP : {0} Seconds".format(getLargestContentfulPaint(data_content)))
-print("CLS : {0}".format(getCumulativeLayoutShift(data_content)))
-print("TBT : {0} Seconds".format(getTotalBlockingTime(data_content)))
-print("DC Time : {0} Seconds".format(getDocComplete(data_content)))
-print("DC Requests : {0}".format(getRequestDoc(data_content)))
-print("DC Bytes : {0} KiloBytes".format(getBytesInDoc(data_content)))
-print("Time : {0} Seconds".format(getFullyLoaded(data_content)))
-print("Requests : {0}".format(getRequestsCount(data_content)))
-print("Total Bytes : {0} KiloBytes".format(getByteIn(data_content)))
+if getTTFB(data_content) is not None:
+	print(f"First Byte : {getTTFB(data_content)} Seconds")
+if getStartRender(data_content) is not None:
+	print(f"Start Render : {getStartRender(data_content)} Seconds")
+if getfirstContentfulPaint(data_content) is not None:
+	print(f"FCP : {getfirstContentfulPaint(data_content)} Seconds")
+if getSpeedIndex(data_content) is not None:
+	print(f"Speed Index : {getSpeedIndex(data_content)} Seconds")
+if getLargestContentfulPaint(data_content) is not None:
+	print(f"LCP : {getLargestContentfulPaint(data_content)} Seconds")
+if getCumulativeLayoutShift(data_content) is not None:
+	print(f"CLS : {getCumulativeLayoutShift(data_content)}")
+if getTotalBlockingTime(data_content) is not None:
+	print(f"TBT : {getTotalBlockingTime(data_content)} Seconds")
+if getDocComplete(data_content) is not None:
+	print(f"DC Time : {getDocComplete(data_content)} Seconds")
+if getRequestDoc(data_content) is not None:
+	print(f"DC Requests : {getRequestDoc(data_content)}")
+if getBytesInDoc(data_content) is not None:
+	print(f"DC Bytes : {getBytesInDoc(data_content)} KiloBytes")
+if getFullyLoaded(data_content) is not None:
+	print(f"Time : {getFullyLoaded(data_content)} Seconds")
+if getRequestsCount(data_content) is not None:
+	print(f"Requests : {getRequestsCount(data_content)}")
+if getByteIn(data_content) is not None:
+	print(f"Total Bytes : {getByteIn(data_content)} KiloBytes")
 if (MAPPER_ARG):
 	print("\n[ Request Details ]")
 	print(requestsMapper(data_content))
