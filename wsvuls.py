@@ -11,6 +11,11 @@ import json
 f = open('./db/vulners.json')
 loaded = json.load(f)
 
+end = '\033[1;0m'
+R = '\033[1;91m'
+G = '\033[1;92m'
+Y = '\033[1;93m'
+
 URL = loaded["base"]["url"]+loaded["base"]["endpoint"]
 sync = loaded["base"]["url"]+loaded["base"]["scanner"]
 
@@ -233,66 +238,63 @@ def getByteIn(data):
 		return None
 
 def requestsMapper(data):
-	regx_reqid = r'<th class="reqNum oddRender"><a href=".+">(.+)</a></th>'
-	regx_requests = r'<td class="reqUrl evenRender"><a rel="nofollow" href="(.+)">.+</a></td>'
-	regx_startime = r'<td class="reqStart oddRender">(.+)</td>'
-	regx_type = r'<td class="reqMime oddRender">(.+)</td>'
-	regx_dns = r'<td class="reqDNS oddRender">(.+)</td>'
-	regx_ssl = r'<td class="reqSSL oddRender">(.+)</td>'
-	regx_code = r'<td class="reqResult oddRender">(.+)</td>'
-	reg0_compile = re.compile(regx_reqid)
-	reg1_compile = re.compile(regx_requests)
-	reg2_compile = re.compile(regx_startime)
-	reg3_compile = re.compile(regx_type)
-	reg4_compile = re.compile(regx_dns)
-	reg5_compile = re.compile(regx_ssl)
-	reg6_compile = re.compile(regx_code)
-	req_id=re.findall(reg0_compile,data)
-	urls=re.findall(reg1_compile,data)
-	times=re.findall(reg2_compile,data)
-	types=re.findall(reg3_compile,data)
-	dns_time=re.findall(reg4_compile,data)
-	ssl_time=re.findall(reg5_compile,data)
-	code_status=re.findall(reg6_compile,data)
-	for i in range(len(urls)):
-		print("\n------------------------------------------")
-		print("RequestID: %s" % (req_id[i]))
-		print("Resource: %s" % (urls[i]))
-		print("Request Start: %s" % (times[i]))
-		print("Content Type: %s" % (types[i]))
-		print("DNS Lookup: %s" % (dns_time[i]))
-		print("SSL Negotiation: %s" % (ssl_time[i]))
-		print("Error/Status Code: %s" % (code_status[i]))
+	MAPPED_REQUESTS = re.compile(r'<tr><th class="reqNum(?:\s+)(.+)(?:\s+)?.+"><a href=".+">(.+)</a></th>\s+<td class="reqUrl.+"><a rel="nofollow" href="(.+)".+</a></td>\s+<td class="reqMime.+">(.+)</td>\s+<td class="reqStart.+">(.+)</td>\s+<td class="reqDNS(?:\s+)?.+>(.+)</td>\s+<td class="reqSocket.+">(.+)</td>\s+<td class="reqSSL.+">(.+)</td>\s+<td class="reqTTFB.+">(.+)</td>\s+<td class="reqDownload.+">(.+)</td>\s+<td class="reqBytes.+">(.+)</td>\s+<td class="cpuTime.+">(.+)</td>\s+<td class="reqResult.+">(.+)</td>\s+<td class="reqIP.+">(.+)</td>\s+</tr>')
+	find_requests = re.findall(MAPPED_REQUESTS,data)
+	return find_requests
 
-process_load = getAverages(postwvscan(getnonce(res.text)))
-data_content = netspeed(process_load)
-# print(data_content)
-if getTTFB(data_content) is not None:
-	print(f"First Byte : {getTTFB(data_content)} Seconds")
-if getStartRender(data_content) is not None:
-	print(f"Start Render : {getStartRender(data_content)} Seconds")
-if getfirstContentfulPaint(data_content) is not None:
-	print(f"FCP : {getfirstContentfulPaint(data_content)} Seconds")
-if getSpeedIndex(data_content) is not None:
-	print(f"Speed Index : {getSpeedIndex(data_content)} Seconds")
-if getLargestContentfulPaint(data_content) is not None:
-	print(f"LCP : {getLargestContentfulPaint(data_content)} Seconds")
-if getCumulativeLayoutShift(data_content) is not None:
-	print(f"CLS : {getCumulativeLayoutShift(data_content)}")
-if getTotalBlockingTime(data_content) is not None:
-	print(f"TBT : {getTotalBlockingTime(data_content)} Seconds")
-if getDocComplete(data_content) is not None:
-	print(f"DC Time : {getDocComplete(data_content)} Seconds")
-if getRequestDoc(data_content) is not None:
-	print(f"DC Requests : {getRequestDoc(data_content)}")
-if getBytesInDoc(data_content) is not None:
-	print(f"DC Bytes : {getBytesInDoc(data_content)} KiloBytes")
-if getFullyLoaded(data_content) is not None:
-	print(f"Time : {getFullyLoaded(data_content)} Seconds")
-if getRequestsCount(data_content) is not None:
-	print(f"Requests : {getRequestsCount(data_content)}")
-if getByteIn(data_content) is not None:
-	print(f"Total Bytes : {getByteIn(data_content)} KiloBytes")
-if (MAPPER_ARG):
-	print("\n[ Request Details ]")
-	print(requestsMapper(data_content))
+def parse_requests(content,debug):
+	for c in content:
+		dbglen = len(c[0].split())
+		if (dbglen > 2):
+			# if( c[0].split()[0] == "warning" ):
+			print("%sreqNum:%s%s" % (Y,c[1],end))
+			print("%sreqUrl:%s%s" % (Y,c[2],end))
+			print("%sreqMime:%s%s" % (Y,c[3],end))
+			print("%sreqStart:%s%s" % (Y,c[4],end))
+			print("%sreqBytes: %s%s" % (Y,c[10],end))
+			print("%sreqIP: %s%s" % (Y,c[13],end))
+			print("−−−−−−−−−−−−\n")
+		else:
+			print(f"reqNum: {c[1]}")
+			print(f"reqUrl: {c[2]}")
+			print(f"reqMime: {c[3]}")
+			print(f"reqStart: {c[4]}")
+			print(f"reqBytes: {c[10]}")
+			print(f"reqResult: {c[12]}")
+			print(f"reqIP: {c[13]}")
+			print("−−−−−−−−−−−−\n")
+
+
+if __name__ == '__main__':
+	process_load = getAverages(postwvscan(getnonce(res.text)))
+	data_content = netspeed(process_load)
+	# print(data_content)
+	if getTTFB(data_content) is not None:
+		print(f"First Byte : {getTTFB(data_content)} Seconds")
+	if getStartRender(data_content) is not None:
+		print(f"Start Render : {getStartRender(data_content)} Seconds")
+	if getfirstContentfulPaint(data_content) is not None:
+		print(f"FCP : {getfirstContentfulPaint(data_content)} Seconds")
+	if getSpeedIndex(data_content) is not None:
+		print(f"Speed Index : {getSpeedIndex(data_content)} Seconds")
+	if getLargestContentfulPaint(data_content) is not None:
+		print(f"LCP : {getLargestContentfulPaint(data_content)} Seconds")
+	if getCumulativeLayoutShift(data_content) is not None:
+		print(f"CLS : {getCumulativeLayoutShift(data_content)}")
+	if getTotalBlockingTime(data_content) is not None:
+		print(f"TBT : {getTotalBlockingTime(data_content)} Seconds")
+	if getDocComplete(data_content) is not None:
+		print(f"DC Time : {getDocComplete(data_content)} Seconds")
+	if getRequestDoc(data_content) is not None:
+		print(f"DC Requests : {getRequestDoc(data_content)}")
+	if getBytesInDoc(data_content) is not None:
+		print(f"DC Bytes : {getBytesInDoc(data_content)} KiloBytes")
+	if getFullyLoaded(data_content) is not None:
+		print(f"Time : {getFullyLoaded(data_content)} Seconds")
+	if getRequestsCount(data_content) is not None:
+		print(f"Requests : {getRequestsCount(data_content)}")
+	if getByteIn(data_content) is not None:
+		print(f"Total Bytes : {getByteIn(data_content)} KiloBytes")
+	if (MAPPER_ARG):
+		print("\n[ Request Details ]")
+		parse_requests(requestsMapper(data_content),"")
