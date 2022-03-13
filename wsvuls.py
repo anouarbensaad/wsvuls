@@ -26,8 +26,16 @@ from modules.regex import (
 	SPEED_INDEX,
 	FIRST_CONTENT_FULPAINT,
 	START_RENDER,
-	TTFB
-)
+	TTFB)
+
+from modules.constants import (
+	WARN_DEBUG,
+	REQ_ID,
+	REQ_URL,
+	REQ_TYPE,
+	REQ_START,
+	REQ_BYTES,
+	REQ_IP)
 
 # import endpoint and url.
 f = open('./db/vulners.json')
@@ -238,26 +246,28 @@ def requestsMapper(data):
 	return find_requests
 
 def parse_requests(content,debug):
-	for c in content:
-		dbglen = len(c[0].split(" "))
+	reqs = []
+	for REQUEST in content:
+		dbglen = len(REQUEST[0].split(" "))
 		if (dbglen == 2):
-			if( c[0].split(" ")[0] == "warning" ):
-				print("%sreqNum:%s%s" % (R,c[1],end))
-				print("%sreqUrl:%s%s" % (R,c[2],end))
-				print("%sreqMime:%s%s" % (R,c[3],end))
-				print("%sreqStart:%s%s" % (R,c[4],end))
-				print("%sreqBytes: %s%s" % (R,c[10],end))
-				print("%sreqIP: %s%s" % (R,c[13],end))
-				print("−−−−−−−−−−−−\n")
-		print(f"reqNum: {c[1]}")
-		print(f"reqUrl: {c[2]}")
-		print(f"reqMime: {c[3]}")
-		print(f"reqStart: {c[4]}")
-		print(f"reqBytes: {c[10]}")
-		print(f"reqResult: {c[12]}")
-		print(f"reqIP: {c[13]}")
-		print("−−−−−−−−−−−−\n")
-
+			if( REQUEST[0].split(" ")[0] == "warning" ):
+				reqs.append([
+					(REQ_ID,REQUEST[1],WARN_DEBUG),
+					(REQ_URL,REQUEST[2],WARN_DEBUG),
+					(REQ_TYPE,REQUEST[3],WARN_DEBUG),
+					(REQ_START,REQUEST[4],WARN_DEBUG),
+					(REQ_BYTES,REQUEST[10],WARN_DEBUG),
+					(REQ_IP,REQUEST[13],WARN_DEBUG)
+				])
+		reqs.append([
+			(REQ_ID,REQUEST[1]),
+			(REQ_URL,REQUEST[2]),
+			(REQ_TYPE,REQUEST[3]),
+			(REQ_START,REQUEST[4]),
+			(REQ_BYTES,REQUEST[10]),
+			(REQ_IP,REQUEST[13])
+		])
+	return reqs
 
 process_load = getAverages(postwvscan(getnonce(res.text)))
 data_content = netspeed(process_load)
@@ -290,4 +300,6 @@ if getByteIn(data_content) is not None:
 	print(f"Total Bytes : {getByteIn(data_content)} KiloBytes")
 if (MAPPER_ARG):
 	print("\n[ Request Details ]")
-	parse_requests(requestsMapper(data_content),"")
+	for maps in parse_requests(requestsMapper(data_content),""):
+		print(f"{maps[0]}: {maps[1]}")
+		print("−−−−−−−−−−−−−−")
