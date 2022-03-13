@@ -28,6 +28,7 @@ from modules.regex import (
 	START_RENDER,
 	TTFB)
 
+# get constants variables.
 from modules.constants import (
 	WARN_DEBUG,
 	REQ_ID,
@@ -35,19 +36,34 @@ from modules.constants import (
 	REQ_TYPE,
 	REQ_START,
 	REQ_BYTES,
-	REQ_IP)
+	SEPARATOR,
+	REQ_IP,
+	FIRST_B,
+	S_RENDER,
+	FCP,
+	SPEED_I,
+	LCP,
+	CLS,
+	TBT,
+	DCTIME,
+	DCREQS,
+	DCBYTES,
+	TTIME,
+	REQSS,
+	TOTBYTES,
+	KB,
+	S
+	)
+
+# get commons functions.
+from common.printer import logger_p
 
 # import endpoint and url.
 f = open('./db/vulners.json')
-loaded = json.load(f)
+DB_LOAD = json.load(f)
 
-# colors.
-end = '\033[1;0m'
-R = '\033[1;91m'
-G = '\033[1;92m'
-
-URL = loaded["base"]["url"]+loaded["base"]["endpoint"]
-sync = loaded["base"]["url"]+loaded["base"]["scanner"]
+URL = DB_LOAD["base"]["url"]+DB_LOAD["base"]["endpoint"]
+URL_SCANNER = DB_LOAD["base"]["url"]+DB_LOAD["base"]["scanner"]
 
 def generate_phpsession():
 	nosalted="anouarbensaad"
@@ -96,11 +112,10 @@ def postwvscan(nonce):
 	"User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:97.0) Gecko/20100101 Firefox/97.0",
 	"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
 	"Accept": "*/*",
-	"Host": "snyk.io",
 	"Referer": URL,
 	"Connection": "keep-alive"
 	}
-	posted=requests.post(sync,headers=headers,data=data,cookies=cookies)
+	posted=requests.post(URL_SCANNER,headers=headers,data=data,cookies=cookies)
 	return posted.json()
 
 HEADERS={
@@ -265,7 +280,7 @@ def parse_requests(content,debug):
 			(REQ_TYPE,REQUEST[3]),
 			(REQ_START,REQUEST[4]),
 			(REQ_BYTES,REQUEST[10]),
-			(REQ_IP,REQUEST[13])
+			(REQ_IP,REQUEST[13])	
 		])
 	return reqs
 
@@ -273,33 +288,45 @@ process_load = getAverages(postwvscan(getnonce(res.text)))
 data_content = netspeed(process_load)
 # print(data_content)
 if getTTFB(data_content) is not None:
-	print(f"First Byte : {getTTFB(data_content)} Seconds")
-if getStartRender(data_content) is not None:
-	print(f"Start Render : {getStartRender(data_content)} Seconds")
+	logger_p(FIRST_B,getTTFB(data_content),S)
+
+if getStartRender(data_content) is not None:	
+	logger_p(S_RENDER,getStartRender(data_content),S)
+
 if getfirstContentfulPaint(data_content) is not None:
-	print(f"FCP : {getfirstContentfulPaint(data_content)} Seconds")
+	logger_p(FCP,getfirstContentfulPaint(data_content),S)
+
 if getSpeedIndex(data_content) is not None:
-	print(f"Speed Index : {getSpeedIndex(data_content)} Seconds")
+	logger_p(SPEED_I,getSpeedIndex(data_content),S)
+
 if getLargestContentfulPaint(data_content) is not None:
-	print(f"LCP : {getLargestContentfulPaint(data_content)} Seconds")
+	logger_p(LCP,getLargestContentfulPaint(data_content),S)
+
 if getCumulativeLayoutShift(data_content) is not None:
-	print(f"CLS : {getCumulativeLayoutShift(data_content)}")
+	logger_p(CLS,getCumulativeLayoutShift(data_content))
+
 if getTotalBlockingTime(data_content) is not None:
-	print(f"TBT : {getTotalBlockingTime(data_content)} Seconds")
+	logger_p(TBT,getTotalBlockingTime(data_content),S)
+
 if getDocComplete(data_content) is not None:
-	print(f"DC Time : {getDocComplete(data_content)} Seconds")
+	logger_p(DCTIME,getDocComplete(data_content))
+
 if getRequestDoc(data_content) is not None:
-	print(f"DC Requests : {getRequestDoc(data_content)}")
+	logger_p(DCREQS,getRequestDoc(data_content))
+
 if getBytesInDoc(data_content) is not None:
-	print(f"DC Bytes : {getBytesInDoc(data_content)} KiloBytes")
+	logger_p(DCBYTES,getBytesInDoc(data_content),KB)
+
 if getFullyLoaded(data_content) is not None:
-	print(f"Time : {getFullyLoaded(data_content)} Seconds")
+	logger_p(TTIME,getFullyLoaded(data_content),S)
+
 if getRequestsCount(data_content) is not None:
-	print(f"Requests : {getRequestsCount(data_content)}")
+	logger_p(REQSS,getRequestsCount(data_content))
+
 if getByteIn(data_content) is not None:
-	print(f"Total Bytes : {getByteIn(data_content)} KiloBytes")
+	logger_p(TOTBYTES,getByteIn(data_content),KB)
+
 if (MAPPER_ARG):
-	print("\n[ Request Details ]")
-	for maps in parse_requests(requestsMapper(data_content),""):
-		print(f"{maps[0]}: {maps[1]}")
-		print("−−−−−−−−−−−−−−")
+	print("\n[ Requests details ]")
+	for MAP in parse_requests(requestsMapper(data_content),""):
+		print(f"{MAP[3][0]}:{MAP[3][1]}\n{MAP[4][0]}:{MAP[4][1]}\n{MAP[2][0]}:{MAP[2][1]}\n{MAP[1][0]}:{MAP[1][1]}\n{SEPARATOR}")
