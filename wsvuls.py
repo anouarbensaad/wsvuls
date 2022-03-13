@@ -1,3 +1,8 @@
+
+# author: anouarbensaad
+
+from __future__ import print_function
+
 import requests
 import re
 import sys
@@ -6,11 +11,29 @@ import hashlib
 import uuid
 import json
 
+# get regular expressions compiles.
+from modules.regex import (
+	MAPPED_REQUESTS,
+	GETBYTEIN,
+	COUNT_REQUESTS,
+	FULLY_LOADED,
+	BYTEINDOC,
+	REQUEST_DOC,
+	DOC_COMPLETE,
+	TBLOCKTIME,
+	CUMULATIVE_LAYOUT_SHIFT,
+	LARGEST_CONTENT_FULPAINT,
+	SPEED_INDEX,
+	FIRST_CONTENT_FULPAINT,
+	START_RENDER,
+	TTFB
+)
 
-
+# import endpoint and url.
 f = open('./db/vulners.json')
 loaded = json.load(f)
 
+# colors.
 end = '\033[1;0m'
 R = '\033[1;91m'
 G = '\033[1;92m'
@@ -107,9 +130,7 @@ def netspeed(url):
 	return response.text
 
 def getTTFB(data):
-	regexp = r'<td id=\"TTFB\" valign=\"middle\">(.+)<span class=\"units\">(.+)</span></td>'
-	rempiled = re.compile(regexp)
-	matched=re.search(rempiled,data)
+	matched=re.search(TTFB,data)
 	try:
 		ttfb_value = matched.group(1)
 		return ttfb_value
@@ -117,9 +138,7 @@ def getTTFB(data):
 		return None
 
 def getStartRender(data):
-	regexp = r'<td id=\"StartRender\" valign=\"middle\">(.+)<span class=\"units\">(.+)</span></td>'
-	rempiled = re.compile(regexp)
-	matched=re.search(rempiled,data)
+	matched=re.search(START_RENDER,data)
 	try:
 		start_render = matched.group(1)
 		return start_render
@@ -127,9 +146,7 @@ def getStartRender(data):
 		return None
 
 def getfirstContentfulPaint(data):
-	regexp = r'<td id=\"firstContentfulPaint\" valign=\"middle\">(.+)<span class=\"units\">(.+)</span></td>'
-	rempiled = re.compile(regexp)
-	matched=re.search(rempiled,data)
+	matched=re.search(FIRST_CONTENT_FULPAINT,data)
 	try:
 		getfirstContentfulPaint = matched.group(1)
 		return getfirstContentfulPaint
@@ -137,9 +154,7 @@ def getfirstContentfulPaint(data):
 		return None
 
 def getSpeedIndex(data):
-	regexp = r'<td id=\"SpeedIndex\" valign=\"middle\">(.+)<span class=\"units\">(.+)</span></td>'
-	rempiled = re.compile(regexp)
-	matched=re.search(rempiled,data)
+	matched=re.search(SPEED_INDEX,data)
 	try:
 		SpeedIndex = matched.group(1)
 		return SpeedIndex
@@ -147,9 +162,7 @@ def getSpeedIndex(data):
 		return None
 
 def getLargestContentfulPaint(data):
-	regexp = r'<td id="chromeUserTiming.LargestContentfulPaint" class=".+" valign="middle">(.+)<span class="units">S</span></td>'
-	rempiled = re.compile(regexp)
-	matched=re.search(rempiled,data)
+	matched=re.search(LARGEST_CONTENT_FULPAINT,data)
 	try:
 		LCP = matched.group(1)
 		return LCP
@@ -157,9 +170,7 @@ def getLargestContentfulPaint(data):
 		return None
 
 def getCumulativeLayoutShift(data):
-	regexp = r'<td id="chromeUserTiming.CumulativeLayoutShift" class=".+" valign="middle">(.+)</td>'
-	rempiled = re.compile(regexp)
-	matched=re.search(rempiled,data)
+	matched=re.search(CUMULATIVE_LAYOUT_SHIFT,data)
 	try:
 		LCP = matched.group(1)
 		return LCP
@@ -167,9 +178,7 @@ def getCumulativeLayoutShift(data):
 		return None
 
 def getTotalBlockingTime(data):
-	regexp = r'<td id="TotalBlockingTime" class=".+" valign="middle"><span class="units comparator">.+</span>(.+)<span class="units">S</span></td>'
-	rempiled = re.compile(regexp)
-	matched=re.search(rempiled,data)
+	matched=re.search(TBLOCKTIME,data)
 	try:
 		TBT = matched.group(1)
 		return TBT
@@ -177,9 +186,7 @@ def getTotalBlockingTime(data):
 		return None
 
 def getDocComplete(data):
-	regexp = r'<td id="DocComplete" class="border" valign="middle">(.+)<span class="units">S</span></td>'
-	rempiled = re.compile(regexp)
-	matched=re.search(rempiled,data)
+	matched=re.search(DOC_COMPLETE,data)
 	try:
 		DC = matched.group(1)
 		return DC
@@ -187,9 +194,7 @@ def getDocComplete(data):
 		return None
 
 def getRequestDoc(data):
-	regexp = r'<td id="RequestsDoc" valign="middle">(.+)</td>'
-	rempiled = re.compile(regexp)
-	matched=re.search(rempiled,data)
+	matched=re.search(REQUEST_DOC,data)
 	try:
 		RD = matched.group(1)
 		return RD
@@ -197,9 +202,7 @@ def getRequestDoc(data):
 		return None
 
 def getBytesInDoc(data):
-	regexp = r'<td id="BytesInDoc" valign="middle">(.+)<span class="units">KB</span></td>'
-	rempiled = re.compile(regexp)
-	matched=re.search(rempiled,data)
+	matched=re.search(BYTEINDOC,data)
 	try:
 		BID = matched.group(1)
 		return BID
@@ -207,9 +210,7 @@ def getBytesInDoc(data):
 		return None
 
 def getFullyLoaded(data):
-	regexp = r'<td id="FullyLoaded" class="border" valign="middle">(.+)<span class="units">S</span></td>'
-	rempiled = re.compile(regexp)
-	matched=re.search(rempiled,data)
+	matched=re.search(FULLY_LOADED,data)
 	try:
 		FL = matched.group(1)
 		return FL
@@ -217,9 +218,7 @@ def getFullyLoaded(data):
 		return None
 
 def getRequestsCount(data):
-	regexp = r'<td id="Requests" valign="middle">(.+)</td>'
-	rempiled = re.compile(regexp)
-	matched=re.search(rempiled,data)
+	matched=re.search(COUNT_REQUESTS,data)
 	try:
 		RC = matched.group(1)
 		return RC
@@ -227,9 +226,7 @@ def getRequestsCount(data):
 		return None
 
 def getByteIn(data):
-	regexp = r'<td id="BytesIn" valign="middle">(.+)<span class="units">KB</span></td>'
-	rempiled = re.compile(regexp)
-	matched=re.search(rempiled,data)
+	matched=re.search(GETBYTEIN,data)
 	try:
 		BI = matched.group(1)
 		return BI
@@ -237,7 +234,6 @@ def getByteIn(data):
 		return None
 
 def requestsMapper(data):
-	MAPPED_REQUESTS = re.compile(r'<tr><th class="reqNum(?:\s+)(.+)(?:\s+)?.+"><a href=".+">(.+)</a></th>\s+<td class="reqUrl.+"><a rel="nofollow" href="(.+)".+</a></td>\s+<td class="reqMime.+">(.+)</td>\s+<td class="reqStart.+">(.+)</td>\s+<td class="reqDNS(?:\s+)?.+>(.+)</td>\s+<td class="reqSocket.+">(.+)</td>\s+<td class="reqSSL.+">(.+)</td>\s+<td class="reqTTFB.+">(.+)</td>\s+<td class="reqDownload.+">(.+)</td>\s+<td class="reqBytes.+">(.+)</td>\s+<td class="cpuTime.+">(.+)</td>\s+<td class="reqResult.+">(.+)</td>\s+<td class="reqIP.+">(.+)</td>\s+</tr>')
 	find_requests = re.findall(MAPPED_REQUESTS,data)
 	return find_requests
 
@@ -253,47 +249,45 @@ def parse_requests(content,debug):
 				print("%sreqBytes: %s%s" % (R,c[10],end))
 				print("%sreqIP: %s%s" % (R,c[13],end))
 				print("−−−−−−−−−−−−\n")
-		else:
-			print(f"reqNum: {c[1]}")
-			print(f"reqUrl: {c[2]}")
-			print(f"reqMime: {c[3]}")
-			print(f"reqStart: {c[4]}")
-			print(f"reqBytes: {c[10]}")
-			print(f"reqResult: {c[12]}")
-			print(f"reqIP: {c[13]}")
-			print("−−−−−−−−−−−−\n")
+		print(f"reqNum: {c[1]}")
+		print(f"reqUrl: {c[2]}")
+		print(f"reqMime: {c[3]}")
+		print(f"reqStart: {c[4]}")
+		print(f"reqBytes: {c[10]}")
+		print(f"reqResult: {c[12]}")
+		print(f"reqIP: {c[13]}")
+		print("−−−−−−−−−−−−\n")
 
 
-if __name__ == '__main__':
-	process_load = getAverages(postwvscan(getnonce(res.text)))
-	data_content = netspeed(process_load)
-	# print(data_content)
-	if getTTFB(data_content) is not None:
-		print(f"First Byte : {getTTFB(data_content)} Seconds")
-	if getStartRender(data_content) is not None:
-		print(f"Start Render : {getStartRender(data_content)} Seconds")
-	if getfirstContentfulPaint(data_content) is not None:
-		print(f"FCP : {getfirstContentfulPaint(data_content)} Seconds")
-	if getSpeedIndex(data_content) is not None:
-		print(f"Speed Index : {getSpeedIndex(data_content)} Seconds")
-	if getLargestContentfulPaint(data_content) is not None:
-		print(f"LCP : {getLargestContentfulPaint(data_content)} Seconds")
-	if getCumulativeLayoutShift(data_content) is not None:
-		print(f"CLS : {getCumulativeLayoutShift(data_content)}")
-	if getTotalBlockingTime(data_content) is not None:
-		print(f"TBT : {getTotalBlockingTime(data_content)} Seconds")
-	if getDocComplete(data_content) is not None:
-		print(f"DC Time : {getDocComplete(data_content)} Seconds")
-	if getRequestDoc(data_content) is not None:
-		print(f"DC Requests : {getRequestDoc(data_content)}")
-	if getBytesInDoc(data_content) is not None:
-		print(f"DC Bytes : {getBytesInDoc(data_content)} KiloBytes")
-	if getFullyLoaded(data_content) is not None:
-		print(f"Time : {getFullyLoaded(data_content)} Seconds")
-	if getRequestsCount(data_content) is not None:
-		print(f"Requests : {getRequestsCount(data_content)}")
-	if getByteIn(data_content) is not None:
-		print(f"Total Bytes : {getByteIn(data_content)} KiloBytes")
-	if (MAPPER_ARG):
-		print("\n[ Request Details ]")
-		parse_requests(requestsMapper(data_content),"")
+process_load = getAverages(postwvscan(getnonce(res.text)))
+data_content = netspeed(process_load)
+# print(data_content)
+if getTTFB(data_content) is not None:
+	print(f"First Byte : {getTTFB(data_content)} Seconds")
+if getStartRender(data_content) is not None:
+	print(f"Start Render : {getStartRender(data_content)} Seconds")
+if getfirstContentfulPaint(data_content) is not None:
+	print(f"FCP : {getfirstContentfulPaint(data_content)} Seconds")
+if getSpeedIndex(data_content) is not None:
+	print(f"Speed Index : {getSpeedIndex(data_content)} Seconds")
+if getLargestContentfulPaint(data_content) is not None:
+	print(f"LCP : {getLargestContentfulPaint(data_content)} Seconds")
+if getCumulativeLayoutShift(data_content) is not None:
+	print(f"CLS : {getCumulativeLayoutShift(data_content)}")
+if getTotalBlockingTime(data_content) is not None:
+	print(f"TBT : {getTotalBlockingTime(data_content)} Seconds")
+if getDocComplete(data_content) is not None:
+	print(f"DC Time : {getDocComplete(data_content)} Seconds")
+if getRequestDoc(data_content) is not None:
+	print(f"DC Requests : {getRequestDoc(data_content)}")
+if getBytesInDoc(data_content) is not None:
+	print(f"DC Bytes : {getBytesInDoc(data_content)} KiloBytes")
+if getFullyLoaded(data_content) is not None:
+	print(f"Time : {getFullyLoaded(data_content)} Seconds")
+if getRequestsCount(data_content) is not None:
+	print(f"Requests : {getRequestsCount(data_content)}")
+if getByteIn(data_content) is not None:
+	print(f"Total Bytes : {getByteIn(data_content)} KiloBytes")
+if (MAPPER_ARG):
+	print("\n[ Request Details ]")
+	parse_requests(requestsMapper(data_content),"")
