@@ -1,8 +1,23 @@
 {
-    "base" : {
-		  "host": "synk.io",
-		  "url": "https://snyk.io/",
-		  "endpoint": "website-scanner/",
-		  "scanner": "wp-admin/admin-ajax.php"
+	"base": {
+	  "statMapper": {
+		"host": "synk.io",
+		"url": "https://snyk.io/",
+		"endpoint": "website-scanner/",
+		"scanner": "wp-admin/admin-ajax.php"
+	  },
+	  "cloudFlare": {
+		"host": "search.censys.io",
+		"url": "https://search.censys.io",
+		"endpoint": "/_search",
+		"scanner": null
+	  },
+	  "proxies": {
+		"host": "free-proxy-list.net",
+		"url": "https://free-proxy-list.net/",
+		"endpoint": null,
+		"scanner": null
 	  }
+	}
   }
+  

@@ -62,8 +62,8 @@ from common.printer import logger_p
 f = open('./db/vulners.json')
 DB_LOAD = json.load(f)
 
-URL = DB_LOAD["base"]["url"]+DB_LOAD["base"]["endpoint"]
-URL_SCANNER = DB_LOAD["base"]["url"]+DB_LOAD["base"]["scanner"]
+URL = DB_LOAD["base"]["statMapper"]["url"]+DB_LOAD["base"]["statMapper"]["endpoint"]
+URL_SCANNER = DB_LOAD["base"]["statMapper"]["url"]+DB_LOAD["base"]["statMapper"]["scanner"]
 
 def generate_phpsession():
 	nosalted="anouarbensaad"
