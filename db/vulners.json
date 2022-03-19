@@ -10,7 +10,7 @@
 		"host": "search.censys.io",
 		"url": "https://search.censys.io",
 		"endpoint": "/_search",
-		"scanner": null
+		"scanner": "hosts/"
 	  },
 	  "proxies": {
 		"host": "free-proxy-list.net",
