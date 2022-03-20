@@ -4,7 +4,7 @@ import re
 import sys
 
 from regex import CF_PARSE_SUB_AND_DOMAIN,CF_IP
-from gen_proxies import proxies_chain
+from gen_proxies import ProxyMasquerade
 
 if sys.version_info < (3, 0):
     raise Exception("This program requires Python 3.0 or greater")
@@ -12,10 +12,12 @@ if sys.version_info < (3, 0):
 end = '\033[1;0m'
 red = '\033[1;91m'
 green = '\033[1;92m'
+# import load data file.
 f = open('../db/vulners.json')
 DB_LOAD = json.load(f)
-URL = DB_LOAD["base"]["cloudFlare"]["url"]+DB_LOAD["base"]["cloudFlare"]["endpoint"]
-SCANNER = DB_LOAD["base"]["cloudFlare"]["url"]+DB_LOAD["base"]["cloudFlare"]["scanner"]
+cloud_dump_url = DB_LOAD["base"]["cloudFlare"]["url"]+DB_LOAD["base"]["cloudFlare"]["endpoint"]
+cloud_dump_scanner = DB_LOAD["base"]["cloudFlare"]["url"]+DB_LOAD["base"]["cloudFlare"]["scanner"]
+proxy_url = DB_LOAD["base"]["proxies"]["url"]
 
 class CloudDumpException(Exception):
     '''
@@ -83,7 +85,7 @@ class CloudDump:
                     "sort":"RELEVANCE",
                     "per_page":"25",
                     "virtual_hosts":"EXCLUDE",
-                    "q":"elissabet.tn"
+                    "q": # url
                 }
                 try:
                     res = requests.get(self._url,params=params,timeout=5,proxies=proxy)
@@ -126,7 +128,7 @@ class CloudDump:
                 "sort": "RELEVANCE",
                 "per_page": "25",
                 "virtual_hosts":"EXCLUDE",
-                "q": "elissabet.tn"
+                "q": #url
             }
             try:
                 res = requests.get(self.SCANNER+ip,params=params,proxies=proxy)
@@ -147,8 +149,8 @@ class CloudDump:
 
 
 # cloud_grap(URL,"")
-obj = CloudDump(URL)
-print(obj._url)
-print(proxies_chain())
-obj._set_proxies_(proxies_chain())
-ips = obj._graps_("")
+proxy_obj = ProxyMasquerade(url=proxy_url)
+cloud_obj = CloudDump(cloud_dump_url)
+# print(cloud_obj._url)
+cloud_obj._set_proxies_(proxy_obj.proxies_chain())
+ips = cloud_obj._graps_("")
