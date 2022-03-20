@@ -3,7 +3,7 @@ import re
 import json
 import sys
 
-from regex import PROXY_PARSE
+from modules.regex import PROXY_PARSE
 
 if sys.version_info < (3, 0):
     raise Exception("This program requires Python 3.0 or greater")
