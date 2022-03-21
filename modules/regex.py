@@ -126,3 +126,16 @@ TTFB = re.compile(r"""
     <\w+\s+\w+=\"TTFB\"\s+\w+=\".+\">
     (.+)<\w+\s+\w+=\".+\">(.+)</\w+></\w+>
 """, re.VERBOSE)
+
+CF_PARSE_SUB_AND_DOMAIN = re.compile(r"<tt>(.+)<mark>(.+)<\/mark><\/tt>")
+CF_IP = re.compile(r"<\/i>\s+<strong>(\d+\.\d+\.\d+\.\d+)<\/strong>")
+PROXY_PARSE = re.compile(r"""
+  <tr>
+    <td>(\d+.\d+.\d+.\d+)</td><td>(\d+)</td>
+    <td>(\w+)<\/td><td\s+class='\w+'>((?:\w+\s+\w+|\w+))?</td>
+    <td>((?:\w+\s+\w+|\w+|\w+\s+\w+\s+\w+))?</td>
+    <td\s+class='\w+'>(\w+)<\/td>
+    <td\s+class='\w+'>(yes)<\/td>
+    <td\s+class='\w+'>\d+\s+\w+\s+\w+<\/td>
+    <\/tr>
+""", re.VERBOSE)

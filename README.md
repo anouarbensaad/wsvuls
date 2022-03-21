@@ -27,6 +27,12 @@ It detects issues outdated software version, insecures HTTP headers, the long an
 ### Why WSVuls ?
 
 WSVuls can extract the following data while crawling: 
+##### Cloudflare :
+- IP Address
+- Ports
+- Hex Headers
+- Protocol Version
+##### Stats :
 - First Byte
 - Start Render
 - FCP
@@ -41,7 +47,7 @@ WSVuls can extract the following data while crawling:
 - Requests
 - Total Bytes
 
-##### In Mapper :
+##### Mapper :
 - Resource
 - Request Start
 - Content Type
@@ -66,24 +72,27 @@ $ docker run -it --name wsvuls wsvuls:latest -u facebook.com
 ### Usage
 
 ```text
-Usage:
-  wsvuls [options]
+Scan, Detect and get stats for a specific url
 
 Examples:
 
-To scan target url:
-$ wsvuls -u facebook.com
+To get stats from target url:
+$ wsvuls stats -u facebook.com
 
-You can map all requests from url:
-$ wsvuls -u facebook.com --mapper
+To get map all requests:
+$ wsvuls stats -u facebook.com --mapper
 
+To detect a right ip address from cloudflare firewall:
+$ wsvuls cloud -d facebook.com
+
+by default use-proxy to bypass the limit rate.
+
+Available Commands: 
+  stats      Get statistics of target website.
+  cloud      Get the right data from cloudflare.
+  
 Flags:
-  -u, --url       set target website
-  -m, --mapper    to mapp requests from website
   -h, --help      help for wsvuls
-  -v, --version   version for wsvuls
-
-Use "wsvuls --help" for more information about a command.
 ```
 
 ### Screenshot
