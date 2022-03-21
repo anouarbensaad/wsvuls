@@ -4,7 +4,6 @@ import re
 import sys
 
 from modules.regex import CF_PARSE_SUB_AND_DOMAIN,CF_IP
-from modules.gen_proxies import ProxyMasquerade
 
 if sys.version_info < (3, 0):
     raise Exception("This program requires Python 3.0 or greater")
@@ -26,6 +25,7 @@ class CloudDump:
     
     def __init__(self,
                 url,proxies=None,
+                target=None,
                 scanner=None):
 
         '''
@@ -38,8 +38,9 @@ class CloudDump:
         '''
 
         self._url = url
-        self._proxies = None
-        self._scanner = None
+        self._proxies = proxies
+        self._scanner = scanner
+        self._target = target
 
     def _set_scanner_(self, scanner):
         '''
@@ -55,7 +56,14 @@ class CloudDump:
 
         self._proxies = proxies
 
-    def _graps_(self,target):
+    def _set_target_(self,target):
+        '''
+        set proxies property crawled from free-proxy-list
+        '''
+
+        self._target = target
+
+    def _graps_(self):
         '''
         This method is used to make a crawling-loadbalance
         
@@ -79,7 +87,7 @@ class CloudDump:
                     "sort":"RELEVANCE",
                     "per_page":"25",
                     "virtual_hosts":"EXCLUDE",
-                    "q":""
+                    "q":self._target
                 }
                 try:
                     res = requests.get(self._url,params=params,timeout=5,proxies=proxy)
@@ -105,7 +113,7 @@ class CloudDump:
         except Exception as err:
             return None
 
-    def wide_scan(self,ip):
+    def wide_scan(self,ip,target):
         '''
         search data from ip.
         :ip: the target ip crawled.
@@ -122,7 +130,7 @@ class CloudDump:
                 "sort": "RELEVANCE",
                 "per_page": "25",
                 "virtual_hosts":"EXCLUDE",
-                "q": ""
+                "q": self._target
             }
             try:
                 res = requests.get(self.SCANNER+ip,params=params,proxies=proxy)
@@ -140,11 +148,3 @@ class CloudDump:
             return matched
         except Exception as err:
             return None
-
-
-# # cloud_grap(URL,"")
-# proxy_obj = ProxyMasquerade(url=proxy_url)
-# cloud_obj = CloudDump(cloud_dump_url)
-# # print(cloud_obj._url)
-# cloud_obj._set_proxies_(proxy_obj.proxies_chain())
-# ips = cloud_obj._graps_("")
