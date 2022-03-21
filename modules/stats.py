@@ -76,23 +76,23 @@ class Stats:
 
         sess_id = uuid.uuid1()
         data={
-        "action":"web_scanner",
-        "url":self._target,
-        "nonce_code":nonce
+            "action":"web_scanner",
+            "url":self._target,
+            "nonce_code":nonce
         }
         anonumous_session="\""+str(sess_id)+"\""
         cookies= {
-        "ajs_anonymous_id": anonumous_session,
-        "PHPSESSID": self.generate_phpsession(),
-        "vid": str(sess_id)
+            "ajs_anonymous_id": anonumous_session,
+            "PHPSESSID": self.generate_phpsession(),
+            "vid": str(sess_id)
         }
         headers={
-        "X-Requested-With": "XMLHttpRequest",
-        "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:97.0) Gecko/20100101 Firefox/97.0",
-        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-        "Accept": "*/*",
-        "Referer": self._url,
-        "Connection": "keep-alive"
+            "X-Requested-With": "XMLHttpRequest",
+            "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:97.0) Gecko/20100101 Firefox/97.0",
+            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+            "Accept": "*/*",
+            "Referer": self._url,
+            "Connection": "keep-alive"
         }
         posted=requests.post(self._scanner,headers=headers,data=data,cookies=cookies)
         return posted.json()
