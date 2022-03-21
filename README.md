@@ -27,6 +27,12 @@ It detects issues outdated software version, insecures HTTP headers, the long an
 ### Why WSVuls ?
 
 WSVuls can extract the following data while crawling: 
+##### Cloudflare :
+- IP Address
+- Ports
+- Hex Headers
+- Protocol Version
+##### Stats :
 - First Byte
 - Start Render
 - FCP
@@ -41,7 +47,7 @@ WSVuls can extract the following data while crawling:
 - Requests
 - Total Bytes
 
-##### In Mapper :
+##### Mapper :
 - Resource
 - Request Start
 - Content Type
