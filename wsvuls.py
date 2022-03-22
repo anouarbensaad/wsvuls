@@ -151,8 +151,11 @@ elif args.command == 'cloud':
 		cloud_obj = CloudDump(cloud_dump_url)
 		cloud_obj._set_proxies_(proxy_obj.proxies_chain())
 		cloud_obj._set_target_(args.domain[0])
-		ips = cloud_obj._graps_()
+		cloud_ips = cloud_obj._graps_()
 	else:
 		parser_error("You need to specify the target url use (-d or --domain)")
+	if args.wide == True:
+		cloud_obj._set_scanner_(cloud_dump_scanner)
+		cloud_obj.wide_scan(cloud_ips,args.domain[0])
 else:
 	parser_error("argument command: invalid choice: (choose from 'cloud', 'stats').")
