@@ -2,6 +2,7 @@ import requests
 import json
 import re
 import sys
+import socket
 
 from modules.regex import CF_PARSE_SUB_AND_DOMAIN,CF_IP
 
@@ -96,10 +97,20 @@ class CloudDump:
                         [ipaddrs.append(ipp) for ipp in self.parse_ip(res.text)]
                         success = True
                         break
+        
+                except requests.exceptions.HTTPError as errh:
+                    print(f"{red}ProxyError{end}: {p} -> a http Error occurred")
 
-                except Exception as error:
-                    print(error)
-        print("ipaddresses_",ipaddrs)
+                except requests.exceptions.ConnectionError as errc:
+                    print(f"{red}ProxyError{end}: {p} -> an error Connecting to the web occurred")
+                
+                except requests.exceptions.Timeout as errt:
+                    print(f"{red}ProxyError{end}: {p} -> a timeout Error occurred")
+                
+                except requests.exceptions.RequestException as err:
+                    print(f"{red}ProxyError{end}: {p} -> an unknown Error occurred")
+        
+        print(f"\n{green}Found{end} -> {ipaddrs}\n")
         return ipaddrs
 
     def parse_domains(self,data):
@@ -113,7 +124,7 @@ class CloudDump:
         except Exception as err:
             return None
 
-    def wide_scan(self,ip,target):
+    def wide_scan(self,ipadresses,target):
         '''
         search data from ip.
         :ip: the target ip crawled.
@@ -122,21 +133,28 @@ class CloudDump:
         ports = []
         comp = {}
         temp_proxies = [] # array proxies.
-        success = False
-        while not success:
-            [temp_proxies.append(proxy) for proxy in self._proxies]
-            params = {
-                "resource": "hosts",
-                "sort": "RELEVANCE",
-                "per_page": "25",
-                "virtual_hosts":"EXCLUDE",
-                "q": self._target
-            }
-            try:
-                res = requests.get(self.SCANNER+ip,params=params,proxies=proxy)
-                # parse data..
-            except Exception as err:
-                print(err)
+        [temp_proxies.append(proxy) for proxy in self._proxies]
+        for ip in ipadresses:
+            success = False
+            while success == False:
+                for p in temp_proxies:
+                    proxy = {
+                        "https": p
+                    }
+                    params = {
+                        "resource": "hosts",
+                        "sort": "RELEVANCE",
+                        "per_page": "25",
+                        "virtual_hosts":"EXCLUDE",
+                        "q": self._target
+                    }
+                    try:
+                        res = requests.get(self._scanner+ip,params=params,proxies=proxy)
+                        print(res)
+                        success = True
+                        break
+                    except Exception as err:
+                        print(err)
 
     def parse_ip(self,data):
         '''
