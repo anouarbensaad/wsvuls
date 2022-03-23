@@ -96,7 +96,7 @@ class CloudDump:
                     "q":self._target
                 }
                 try:
-                    res = requests.get(self._url,params=params,timeout=5,proxies=proxy)
+                    res = requests.get(self._url,params=params,timeout=3.5,proxies=proxy)
                     # check ip addresses found or not.
                     if self.parse_ip(res.text) is not None and len(self.parse_ip(res.text)) > 0:
                         [ipaddrs.append(ipp) for ipp in self.parse_ip(res.text)]
@@ -177,7 +177,7 @@ class CloudDump:
                         "https": p
                     }
                     try:
-                        res = requests.get(self._scanner+ip,params=params,proxies=proxy)
+                        res = requests.get(self._scanner+ip,proxies=proxy,timeout=3.5)
                         print("PROTOCOLS:\n")
                         for p in self.__get_protocols__(res.text):
                             print(p)
