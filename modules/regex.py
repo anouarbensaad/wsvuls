@@ -139,3 +139,19 @@ PROXY_PARSE = re.compile(r"""
     <td\s+class='\w+'>\d+\s+\w+\s+\w+<\/td>
     <\/tr>
 """, re.VERBOSE)
+
+PROVIDER_IP = re.compile(r"""
+<dt>Network</dt>\s+<dd>\s+<a.+>\s+(.+)\s+</a>\s+</dd>
+""", re.VERBOSE)
+
+ROUTING_IP = re.compile(r"""
+<dt>Routing</dt>\s+<dd>\s+<a.+>\s+(.+)\s+</a>\s+.+<a href.+>(.+)</a>\s+</dd>
+""", re.VERBOSE)
+
+PROTOCOLS_IP = re.compile(r"""
+<a\s+href=.+>(.+)</a>\s+<span\s+class="bigcomma">,</span>
+""")
+
+OS_IP = re.compile(r"""
+<dt>OS</dt>\s+<dd>(.+)</dd>
+""")

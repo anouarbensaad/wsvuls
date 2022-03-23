@@ -4,7 +4,12 @@ import re
 import sys
 import socket
 
-from modules.regex import CF_PARSE_SUB_AND_DOMAIN,CF_IP
+from modules.regex import (CF_PARSE_SUB_AND_DOMAIN,
+                        CF_IP,
+                        PROVIDER_IP,
+                        ROUTING_IP,
+                        PROTOCOLS_IP,
+                        OS_IP)
 
 if sys.version_info < (3, 0):
     raise Exception("This program requires Python 3.0 or greater")
@@ -124,6 +129,36 @@ class CloudDump:
         except Exception as err:
             return None
 
+    def __get_protocols__(self,data):
+        matches = re.findall(PROTOCOLS_IP,data)
+        try:
+            return matches
+        except Exception as err:
+            return None
+
+    def __get_os__(self,data):
+        matched = re.search(OS_IP,data)
+        try:
+            return matched.group(1)
+        except Exception as err:
+            return None
+
+    def __get_routing__(self,data):
+        routing = []
+        matched = re.search(ROUTING_IP,data)
+        try:
+            routing.append(matched.group(1),matched.group(2))
+            return routing
+        except Exception as err:
+            return None
+    
+    def __get_provider__(self,data):
+        matched = re.search(PROVIDER_IP,data)
+        try:
+            return matched.group(1)
+        except Exception as err:
+            return None
+
     def wide_scan(self,ipadresses,target):
         '''
         search data from ip.
@@ -141,20 +176,30 @@ class CloudDump:
                     proxy = {
                         "https": p
                     }
-                    params = {
-                        "resource": "hosts",
-                        "sort": "RELEVANCE",
-                        "per_page": "25",
-                        "virtual_hosts":"EXCLUDE",
-                        "q": self._target
-                    }
                     try:
                         res = requests.get(self._scanner+ip,params=params,proxies=proxy)
-                        print(res)
+                        print("PROTOCOLS:\n")
+                        for p in self.__get_protocols__(res.text):
+                            print(p)
+                        print("OS:\n")
+                        print(self.__get_os__(res.text))
+                        print("ROUTING:\n")
+                        print(f"{self.__get_routing__(res.text)[0]} via {self.__get_routing__(res.text)[1]}")
+                        print("PROVIDER:\n")
+                        print(self.__get_provider__(res.text))
                         success = True
                         break
-                    except Exception as err:
-                        print(err)
+                    except requests.exceptions.HTTPError as errh:
+                        print(f"{red}ProxyError{end}: {p} -> a http Error occurred")
+
+                    except requests.exceptions.ConnectionError as errc:
+                        print(f"{red}ProxyError{end}: {p} -> an error Connecting to the web occurred")
+                    
+                    except requests.exceptions.Timeout as errt:
+                        print(f"{red}ProxyError{end}: {p} -> a timeout Error occurred")
+                    
+                    except requests.exceptions.RequestException as err:
+                        print(f"{red}ProxyError{end}: {p} -> an unknown Error occurred")
 
     def parse_ip(self,data):
         '''

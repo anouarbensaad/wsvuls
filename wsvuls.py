@@ -15,8 +15,8 @@ from common.colors import end,red
 
 from modules.stats import Stats
 from modules.mapper import MapperRequest as Mapper
-from modules.gen_proxies import ProxyMasquerade
-from modules.cloud_dump  import CloudDump
+from modules.proxy_masquerade import ProxyMasquerade
+from modules.cloudf_dump  import CloudDump
 
 # get constants variables.
 from modules.constants import (
