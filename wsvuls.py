@@ -66,6 +66,10 @@ def parse_args():
 			help="domain target to scan",
 			dest="domain",
 			nargs=1)
+	cloud_parser.add_argument('-i', '--ip',
+			help="target ip to scan",
+			dest="ip",
+			nargs=1)
 	cloud_parser.add_argument('-w', '--wide',
 			help="wide scan to get all data from cloudflare",
 			dest="wide",
@@ -152,8 +156,14 @@ elif args.command == 'cloud':
 		cloud_obj._set_proxies_(proxy_obj.proxies_chain())
 		cloud_obj._set_target_(args.domain[0])
 		cloud_ips = cloud_obj._graps_()
+	elif args.ip:
+		proxy_obj = ProxyMasquerade(url=proxy_url)
+		cloud_obj = CloudDump(cloud_dump_url)
+		cloud_obj._set_proxies_(proxy_obj.proxies_chain())
+		cloud_obj._set_scanner_(cloud_dump_scanner)
+		cloud_obj.scan_ip(args.ip[0])
 	else:
-		parser_error("You need to specify the target url use (-d or --domain)")
+		parser_error("You need to specify the target url use (-d or -i)")
 	if args.wide == True:
 		cloud_obj._set_scanner_(cloud_dump_scanner)
 		cloud_obj.wide_scan(cloud_ips,args.domain[0])
