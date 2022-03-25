@@ -3,7 +3,7 @@ import json
 import re
 import sys
 import socket
-
+from modules.proxy_masquerade import ProxyMasquerade
 from modules.regex import (CF_PARSE_SUB_AND_DOMAIN,
                         CF_IP,
                         PROVIDER_IP,
@@ -17,6 +17,8 @@ if sys.version_info < (3, 0):
 end = '\033[1;0m'
 red = '\033[1;91m'
 green = '\033[1;92m'
+yellow = '\033[1;93m'  # yellow
+blue = '\033[1;94m'
 
 class CloudDumpException(Exception):
     '''
@@ -76,17 +78,24 @@ class CloudDump:
         so we can receive content from censys and get the addresses which 
         can be bypassed the rate-limit
         '''
-
+        
+        print(f"{yellow}Available Proxies:{end} {len(self._proxies)}")
+        
         success = False
         temp_proxies = []
         ipaddrs = []
+        used_proxy = 0
         # set proxies to array.
         [temp_proxies.append(proxy) for proxy in self._proxies]
         # repeating requests until getting the data
         while success == False:
+            if used_proxy == len(self._proxies):
+                self._refresh_proxies_()
+                print(f"{yellow}Available Proxies:{end} {len(self._proxies)}")
+                used_proxy = 0
             for p in temp_proxies:
                 proxy = {
-                    "https": p
+                  "https": p
                 }
                 params = {
                     "resource":"hosts",
@@ -102,14 +111,19 @@ class CloudDump:
                         [ipaddrs.append(ipp) for ipp in self.parse_ip(res.text)]
                         success = True
                         break
-        
+
                 except Exception as err:
                     error = str(err)
                     rmatched = re.search(re.compile(r"Caused\s+by\s+.+[\',|,]\s+(?:\')?(?:\w+\(\')?(.+)[\']"),error)
                     print(f"{red}ProxyError{end}: {p}\t\t->\t{rmatched.group(1)}")
-        
+
         print(f"\n{green}Found{end} -> {ipaddrs}\n")
         return ipaddrs
+
+    def _refresh_proxies_(self):
+        print(f"{blue}[*] Refresh Proxies{end}")
+        proxy_obj = ProxyMasquerade(url="https://free-proxy-list.net/")
+        self._set_proxies_(proxy_obj.proxies_chain())
 
     def parse_domains(self,data):
         '''
@@ -157,14 +171,21 @@ class CloudDump:
         search data from ip.
         :ip: the target ip crawled.
         '''
-
+        
+        print(f"{yellow}Available Proxies:{end} {len(self._proxies)}")
+        
         ports = []
         comp = {}
+        used_proxy = 0
         temp_proxies = [] # array proxies.
         [temp_proxies.append(proxy) for proxy in self._proxies]
         for ip in ipadresses:
             success = False
             while success == False:
+                if used_proxy == len(self._proxies):
+                    self._refresh_proxies_()
+                    print(f"{yellow}Available Proxies:{end} {len(self._proxies)}")
+                    used_proxy = 0
                 for p in temp_proxies:
                     proxy = {
                         "https": p
@@ -187,20 +208,27 @@ class CloudDump:
                         error = str(err)
                         rmatched = re.search(re.compile(r"Caused\s+by\s+.+[\',|,]\s+(?:\')?(?:\w+\(\')?(.+)[\']"),error)
                         print(f"{red}ProxyError{end}: {p}\t\t->\t{rmatched.group(1)}")
-            
+
 
     def scan_ip(self,ip):
         '''
         search data from ip.
         '''
 
+        print(f"{yellow}Available Proxies:{end} {len(self._proxies)}")
         ports = []
         comp = {}
         temp_proxies = [] # array proxies.
+        used_proxy = 0
         [temp_proxies.append(proxy) for proxy in self._proxies]
         success = False
         while success == False:
+            if used_proxy == len(self._proxies):
+                self._refresh_proxies_()
+                print(f"{yellow}Available Proxies:{end} {len(self._proxies)}")
+                used_proxy = 0
             for p in temp_proxies:
+                used_proxy = used_proxy+1
                 proxy = {
                     "https": p
                 }
