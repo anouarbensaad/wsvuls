@@ -96,24 +96,17 @@ class CloudDump:
                     "q":self._target
                 }
                 try:
-                    res = requests.get(self._url,params=params,timeout=6,proxies=proxy)
+                    res = requests.get(self._url,params=params,timeout=10,proxies=proxy)
                     # check ip addresses found or not.
                     if self.parse_ip(res.text) is not None and len(self.parse_ip(res.text)) > 0:
                         [ipaddrs.append(ipp) for ipp in self.parse_ip(res.text)]
                         success = True
                         break
         
-                except requests.exceptions.HTTPError as errh:
-                    print(f"{red}ProxyError{end}: {p} -> a http Error occurred")
-
-                except requests.exceptions.ConnectionError as errc:
-                    print(f"{red}ProxyError{end}: {p} -> an error Connecting to the web occurred")
-                
-                except requests.exceptions.Timeout as errt:
-                    print(f"{red}ProxyError{end}: {p} -> a timeout Error occurred")
-                
-                except requests.exceptions.RequestException as err:
-                    print(f"{red}ProxyError{end}: {p} -> an unknown Error occurred")
+                except Exception as err:
+                    error = str(err)
+                    rmatched = re.search(re.compile(r"Caused\s+by\s+.+[\',|,]\s+(?:\')?(?:\w+\(\')?(.+)[\']"),error)
+                    print(f"{red}ProxyError{end}: {p}\t\t->\t{rmatched.group(1)}")
         
         print(f"\n{green}Found{end} -> {ipaddrs}\n")
         return ipaddrs
@@ -177,7 +170,7 @@ class CloudDump:
                         "https": p
                     }
                     try:
-                        res = requests.get(self._scanner+ip,proxies=proxy,timeout=6)
+                        res = requests.get(self._scanner+ip,proxies=proxy,timeout=10)
                         print("PROTOCOLS:\n")
                         for p in self.__get_protocols__(res.text):
                             print(p)
@@ -189,18 +182,12 @@ class CloudDump:
                         print(self.__get_provider__(res.text))
                         success = True
                         break
-                    except requests.exceptions.HTTPError as errh:
-                        print(f"{red}ProxyError{end}: {p} -> a http Error occurred")
 
-                    except requests.exceptions.ConnectionError as errc:
-                        print(f"{red}ProxyError{end}: {p} -> an error Connecting to the web occurred")
-                    
-                    except requests.exceptions.Timeout as errt:
-                        print(f"{red}ProxyError{end}: {p} -> a timeout Error occurred")
-                    
-                    except requests.exceptions.RequestException as err:
-                        print(f"{red}ProxyError{end}: {p} -> an unknown Error occurred")
-
+                    except Exception as err:
+                        error = str(err)
+                        rmatched = re.search(re.compile(r"Caused\s+by\s+.+[\',|,]\s+(?:\')?(?:\w+\(\')?(.+)[\']"),error)
+                        print(f"{red}ProxyError{end}: {p}\t\t->\t{rmatched.group(1)}")
+            
 
     def scan_ip(self,ip):
         '''
@@ -218,7 +205,7 @@ class CloudDump:
                     "https": p
                 }
                 try:
-                    res = requests.get(self._scanner+ip,proxies=proxy,timeout=6)
+                    res = requests.get(self._scanner+ip,proxies=proxy,timeout=10)
                     print("PROTOCOLS:\n")
                     for p in self.__get_protocols__(res.text):
                         print(p)
@@ -230,18 +217,11 @@ class CloudDump:
                     print(self.__get_provider__(res.text))
                     success = True
                     break
-                except requests.exceptions.HTTPError as errh:
-                    print(f"{red}ProxyError{end}: {p} -> a http Error occurred")
 
-                except requests.exceptions.ConnectionError as errc:
-                    print(f"{red}ProxyError{end}: {p} -> an error Connecting to the web occurred")
-                
-                except requests.exceptions.Timeout as errt:
-                    print(f"{red}ProxyError{end}: {p} -> a timeout Error occurred")
-                
-                except requests.exceptions.RequestException as err:
-                    print(f"{red}ProxyError{end}: {p} -> an unknown Error occurred")
-
+                except Exception as err:
+                    error = str(err)
+                    rmatched = re.search(re.compile(r"Caused\s+by\s+.+[\',|,]\s+(?:\')?(?:\w+\(\')?(.+)[\']"),error)
+                    print(f"{red}ProxyError{end}: {p}\t\t->\t{rmatched.group(1)}")
 
     def parse_ip(self,data):
         '''
