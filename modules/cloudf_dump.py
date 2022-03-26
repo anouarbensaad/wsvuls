@@ -117,7 +117,9 @@ class CloudDump:
                     rmatched = re.search(re.compile(r"Caused\s+by\s+.+[\',|,]\s+(?:\')?(?:\w+\(\')?(.+)[\']"),error)
                     print(f"{red}ProxyError{end}: {p}\t\t->\t{rmatched.group(1)}")
 
-        print(f"\n{green}Found{end} -> {ipaddrs}\n")
+        print(f"\n{green}Found:{end}\n")
+        for ip in ipaddrs:
+            print(ip)
         return ipaddrs
 
     def _refresh_proxies_(self):
